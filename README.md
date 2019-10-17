@@ -1,7 +1,7 @@
 
 # LED-Movie-Player
 
-動画・音声を読み込んで LED マトリクスパネル上で再生させる Raspberry Pi 用ソフト  
+動画・音声を読み込んで LED マトリクスパネル上で再生させる Raspberry Pi 用アプリケーション  
 （ https://qiita.com/cstoku/items/eb17d111225d3e35ec61 の記事上のコードより改造）です。
 
 ## 同梱物
