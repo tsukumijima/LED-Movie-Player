@@ -82,7 +82,7 @@ elif [ "$2" = "file" ]; then
 fi
 
 if [ "$4" = "true" ]; then
-    contrast=",eq=contrast=4:brightness=-0.2"
+    contrast=",eq=saturation=1.4:contrast=1.5:brightness=-0.2"
 else
     contrast=""
 fi
@@ -96,14 +96,14 @@ echo ""
 
 if [ "$2" = "download" ]; then
 
-    ffmpeg -y -i "${filename}_orig.mp4" -vcodec libx264 -r 30 -vf scale=${width}:${height}${contrast} "${filename}.mp4"
+    ffmpeg -y -i "${filename}_orig.mp4" -vcodec libx264 -vf scale=${width}:${height}${contrast} "${filename}.mp4"
     echo ""
     ffmpeg -y -i "${filename}_orig.mp4" -vn -af dynaudnorm -ac 2 -ar 44100 -ab 128k "${filename}.mp3"
     rm -r "${filename}_orig.mp4"
 
 elif [ "$2" = "file" ]; then
 
-    ffmpeg -y -i "${filename}" -vcodec libx264 -r 30 -vf scale=${width}:${height}${contrast} "${filename_}.mp4"
+    ffmpeg -y -i "${filename}" -vcodec libx264 -vf scale=${width}:${height}${contrast} "${filename_}.mp4"
     echo ""
     ffmpeg -y -i "${filename}" -vn -af dynaudnorm -ac 2 -ar 44100 -ab 128k "${filename_}.mp3"
 
