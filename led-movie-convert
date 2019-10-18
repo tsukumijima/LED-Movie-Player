@@ -3,35 +3,43 @@
 # エンコード後のファイルを置くフォルダ
 path="/home/pi/movieplayer/"
 # バージョン
-version="2.1"
+version="2.2"
 
 if [ $# -eq 5 ]; then
     # 動画の幅
-    width=$4
+    width=$5
     # 動画の高さ
-    height=$5
+    height=$6
 else
     # 動画の幅
-    width=160
+    width=192
     # 動画の高さ
-    height=90
+    height=108
 fi
 
 mkdir -p  ${path}
 
-if [ $# -ne 3 -a $# -ne 5 ]; then
+if [ $# -ne 4 -a $# -ne 6 ]; then
     echo "" 1>&2
     echo "---------------------------------------------------" 1>&2
     echo "  Error: Argument is missing or too many." 1>&2
     echo "  Usage: Download  :" 1>&2
-    echo "           1. led-movie-convert [Download URL] download auto" 1>&2
-    echo "           2. led-movie-convert [Download URL] download \"[File name (no extension)]\"" 1>&2
-    echo "           3. led-movie-convert [Download URL] download \"[File name (no extension)]\"" 1>&2
+    echo "           1. led-movie-convert [Download URL] download auto false" 1>&2
+    echo "           2. led-movie-convert [Download URL] download auto true" 1>&2
+    echo "           3. led-movie-convert [Download URL] download \"[File name (no extension)]\" false" 1>&2
+    echo "           4. led-movie-convert [Download URL] download \"[File name (no extension)]\" true" 1>&2
+    echo "           5. led-movie-convert [Download URL] download \"[File name (no extension)]\" false" 1>&2
+    echo "                                [Movie width] [Movie height]" 1>&2
+    echo "           6. led-movie-convert [Download URL] download \"[File name (no extension)]\" true" 1>&2
     echo "                                [Movie width] [Movie height]" 1>&2
     echo "         Localfile :" 1>&2
-    echo "           1. led-movie-convert [Localfile path] file auto" 1>&2
-    echo "           2. led-movie-convert [Localfile path] file \"[File name (no extension)]\"" 1>&2
-    echo "           3. led-movie-convert [Localfile path] file \"[File name (no extension)]\"" 1>&2
+    echo "           1. led-movie-convert [Localfile path] file auto false" 1>&2
+    echo "           2. led-movie-convert [Localfile path] file auto true" 1>&2
+    echo "           3. led-movie-convert [Localfile path] file \"[File name (no extension)]\" false" 1>&2
+    echo "           4. led-movie-convert [Localfile path] file \"[File name (no extension)]\" true" 1>&2
+    echo "           5. led-movie-convert [Localfile path] file \"[File name (no extension)]\" false" 1>&2
+    echo "                                [Movie width] [Movie height]" 1>&2
+    echo "           6. led-movie-convert [Localfile path] file \"[File name (no extension)]\" true" 1>&2
     echo "                                [Movie width] [Movie height]" 1>&2
     echo "" 1>&2
     echo "  Please Retry... m(__)m" 1>&2
@@ -73,6 +81,12 @@ elif [ "$2" = "file" ]; then
 
 fi
 
+if [ "$4" = "true" ]; then
+    contrast=",eq=contrast=4:brightness=-0.2"
+else
+    contrast=""
+fi
+
 echo "  Filename: "${filename}
 echo "  Width   : "${width}
 echo "  Height  : "${height}
@@ -82,14 +96,14 @@ echo ""
 
 if [ "$2" = "download" ]; then
 
-    ffmpeg -y -i "${filename}_orig.mp4" -vcodec libx264 -vf scale=${width}:${height},eq=contrast=4=brightness=-0.2 "${filename}.mp4"
+    ffmpeg -y -i "${filename}_orig.mp4" -vcodec libx264 -r 30 -vf scale=${width}:${height}${contrast} "${filename}.mp4"
     echo ""
     ffmpeg -y -i "${filename}_orig.mp4" -vn -af dynaudnorm -ac 2 -ar 44100 -ab 128k "${filename}.mp3"
     rm -r "${filename}_orig.mp4"
 
 elif [ "$2" = "file" ]; then
 
-    ffmpeg -y -i "${filename}" -vcodec libx264 -vf scale=192:108,eq=contrast=4=brightness=-0.2 "${filename_}.mp4"
+    ffmpeg -y -i "${filename}" -vcodec libx264 -r 30 -vf scale=${width}:${height}${contrast} "${filename_}.mp4"
     echo ""
     ffmpeg -y -i "${filename}" -vn -af dynaudnorm -ac 2 -ar 44100 -ab 128k "${filename_}.mp3"
 

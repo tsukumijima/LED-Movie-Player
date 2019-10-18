@@ -121,19 +121,27 @@ LED-Movie-Convert を利用して、YouTube 等の動画やラズパイ上にあ
  - 第一引数… ソース元を指定します ( URL or ファイルパス)
  - 第二引数… ソースの種類を選択します ( URL からダウンロードするなら download 、ファイルパスからなら file )
  - 第三引数… ファイル名を設定します (ファイル名を動画名 or ファイル名から取るなら auto 、それ以外なら拡張子なしのファイル名を入れる)
- - 第四引数(オプション)… 動画の横幅を指定（例: 160 ）
- - 第五引数(オプション)… 動画の高さを指定（例: 90 ）
+ - 第四引数… コントラストを上げるかどうか（上げるなら true・上げないなら false ）
+   - アニメなど、コントラストの低い動画は上げたほうがより鮮明に、より綺麗に再生できます
+ - 第五引数(オプション)… 動画の横幅を指定（例: 160 ）
+ - 第六引数(オプション)… 動画の高さを指定（例: 90 ）
 
 ### 使用例
 
  - YouTube 等からダウンロードする場合
-   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download auto
-   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE"
-   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" 192 108
+   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download auto false
+   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download auto true
+   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" false
+   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" true
+   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" false 192 108
+   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" true 192 108
  - ローカルファイルから変換する場合
-   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file auto
-   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE"
-   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE" 160 90
+   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file auto false
+   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file auto true
+   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE" false
+   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE" true
+   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE" false 160 90
+   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE" true 160 90
 
 ## 謝辞
 
