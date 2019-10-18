@@ -37,7 +37,9 @@ int play(std::string movie_file, std::string audio_file, int rows, int cols, int
     // ハードウェアパルス生成を無効にする
     // この値を false にしてハードウェアパルス生成を有効にする場合、
     // ラズパイに載っている音声モジュールを無効にする必要がある
-    options.disable_hardware_pulsing = true;
+    // この値を true にしてハードウェアパルス生成を無効にする場合、
+    // 画面にちらつきが出る事があるので非推奨らしい
+    options.disable_hardware_pulsing = false;
 
     // GPIOを初期化
     GPIO io;

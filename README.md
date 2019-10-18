@@ -1,137 +1,144 @@
 
 # LED-Movie-Player
 
-����E������ǂݍ���� LED �}�g���N�X�p�l����ōĐ������� Raspberry Pi �p�A�v���P�[�V����  
-�i https://qiita.com/cstoku/items/eb17d111225d3e35ec61 �̋L����̃R�[�h�������j�ł��B
+動画・音声を読み込んで LED マトリクスパネル上で再生させる Raspberry Pi 用アプリケーション  
+（ https://qiita.com/cstoku/items/eb17d111225d3e35ec61 の記事上のコードより改造）です。
 
-## ������
+必要なものや配線等は [こちら](https://blog.tsukumijima.net/article/ledmatrix-movie/) の記事も参考にしてください。
 
- - led-movie-player �c Raspberry Pi 3 B+ ��Ńr���h�������s�t�@�C��
-   - ��{�I�� Linux �ł͎��s�t�@�C���Ɋg���q���t���܂���
- - led-movie-player.cc �c �\�[�X�i C++ �j�t�@�C��
-   - �\���E�Đ������̃R�[�h��O�q�̋L����肨�؂肵�Ă��܂�
- - led-movie-convert �c YouTube ���̓���⃉�Y�p�C��̓����ϊ����� LED-Movie-Player �ōĐ��o����`���ɂ���\�t�g
-   - ���g�̓o�b�`�t�@�C���ł��i��q�j
- - Makefile �c �r���h�菇�����L�q�����X�N���v�g�t�@�C��
- - README.md �c ���̃t�@�C��
- - sample/ �c LED�ŗ�����T�C�Y�ɃG���R�[�h�����T���v���� mp4 �� mp3 �����Ă���܂�
-   - �Đ�������ꍇ�͈ꎮ /home/pi/movieplayer/ �ɃR�s�[���ĉ�����
- - matrix/ �c [rpi-rgb-lex-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) �� submodule �Ƃ��Ďg���Ă��܂�
+## 同梱物
 
-## �r���h�菇
+ - led-movie-player … Raspberry Pi 3 B+ 上でビルドした実行ファイル
+   - 基本的に Linux では実行ファイルに拡張子が付きません
+ - led-movie-player.cc … ソース（ C++ ）ファイル
+   - 表示・再生部分のコードを前述の記事よりお借りしています
+ - led-movie-convert … YouTube 等の動画やラズパイ上の動画を変換して LED-Movie-Player で再生出来る形式にするソフト
+   - 中身はバッチファイルです（後述）
+ - Makefile … ビルド手順等を記述したスクリプトファイル
+ - README.md … このファイル
+ - sample/ … LEDで流せるサイズにエンコードしたサンプルの mp4 と mp3 を入れてあります
+   - 再生させる場合は一式 /home/pi/movieplayer/ にコピーして下さい
+ - matrix/ … [rpi-rgb-lex-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) を submodule として使っています
 
-�ꉞ�r���h�ς݂̃t�@�C�����������Ă��܂����A�o���邾���r���h���邱�Ƃ𐄏����܂�
+## ビルド手順
 
-1. �\�ߕK�v�ȃp�b�P�[�W�i���C�u�����j���C���X�g�[�����Ă����܂��傤
-  - `sudo apt update -y && sudo apt upgrade -y`
-  - `sudo apt install -y python3 python3-pip ffmpeg gcc g++ make libopencv-dev libsdl1.2-dev libsdl2-dev libsdl-mixer1.2-dev libsdl2-mixer-dev`
-  - `sudo pip3 install youtube-dl`
-2. make �Ńr���h���܂�
-  - `make`
-  - �r���h�Ɏ��s����ꍇ�A���C�u���������܂��C���X�g�[���o���Ă��Ȃ��\��������܂�
-3. make install �Ńp�X�̒ʂ����ꏊ�ɃC���X�g�[�����܂�
-  - `sudo make install`
-  - ������ sudo �����܂��傤
+一応ビルド済みのファイルも同梱していますが、出来るだけビルドすることを推奨します
 
-## �g����
+1. 予め必要なパッケージ（ライブラリ）をインストールしておきましょう
+    - `sudo apt update -y && sudo apt upgrade -y`
+    - `sudo apt install -y python3 python3-pip ffmpeg gcc g++ make libopencv-dev libsdl1.2-dev libsdl2-dev libsdl-mixer1.2-dev libsdl2-mixer-dev`
+    - `sudo pip3 install youtube-dl`
+2. make でビルドします
+    - `make`
+    - ビルドに失敗する場合、ライブラリがうまくインストール出来ていない可能性があります
+3. make install でパスの通った場所にインストールします
+    - `sudo make install`
+    - ちゃんと sudo をつけましょう
+4. その他、デフォルトではラズパイの bcm2835 サウンドカードを無効化する必要があります（ハードウェアパルスの生成に必要なため）
+    - そのため、別途 USB サウンドカードを購入し、USB サウンドカードで再生できる（ラズパイ内蔵サウンドカードを使わない）状態にする必要があります
+    - ハードウェアパルスを生成せずソフトウェアパルスで再生する事も可能ですが、ちらつきが発生するため非推奨です
+      - ハードウェアパルスを無効化して再生させたい場合は、led-movie-player.cc 中の options.disable_hardware_pulsing = false; を options.disable_hardware_pulsing = true; に書き換え、もう一度ビルドしてください
+    - 詳細な手順は [こちら](https://blog.tsukumijima.net/article/ledmatrix-movie/#toc11) の項目に記載してあります、参考にしてください
 
-1. ����͍ő� 192 �~ 108 �܂łɃ��T�C�Y���� .mp4 �`���A�����̓T���v�����O���[�g 44100kHz �ɂ��� .mp3 �`���ɂ��A�����t�@�C������ /home/pi/movieplayer/ �ɕۑ����܂��B
-   - LED-Movie-Convert ���g���ƁA����E�����̕ϊ����������ł��܂�
-   - /home/pi/movieplayer/ �ȊO�ɒu�����Ƃ��\�ł����A���̏ꍇ�� led-movie-player.cc �\�[�X���̋L�q��ύX���Ă�������
-2. sudo led-movie-player "[ �g���q�Ȃ��t�@�C���� ]" �Ɠ��͂��Ď��s����ƁA�Đ��ł��܂��B
-   - �g���q�Ȃ��t�@�C�����́A�\�� /home/pi/movieplayer/ �ɒu���Ă���t�@�C���̂��̂ɂ��Ă�������
-     - �Ⴆ�� /home/pi/movieplayer/ �� TEIDA ZONE.mp4 �� TEIDA ZONE.mp3 ��u�����ꍇ�A[ �g���q�Ȃ��t�@�C���� ] �ɂ� "TEIDA ZONE" �����܂�
-     - "TEIDA ZONE" �̂悤�Ƀt�@�C�����ɃX�y�[�X���܂܂��ꍇ�́A�K�� "" �ň͂��悤�ɂ��Ă�������
-   - sudo �����Ȃ��ƃG���[�ɂȂ�܂��A�K�� sudo ������ root �Ŏ��s���Ă�������
-   - �Ō�̃R�}���h�ȊO�̓f�t�H���g�� 64 �~ 64 �p�l���� 2 ����ɐڑ����Ă��鎖��z�肵�čĐ����܂��B
-     - �𑜓x���قȂ�p�l���̏ꍇ�́Aled-movie-player.cc �\�[�X���̋L�q�i 155 �s�ڂ�����j��ύX���Ă�������
-   - sudo led-movie-player "[ �g���q�Ȃ��t�@�C���� ]" 0 �Ɠ��͂��Ď��s����ƁA�������[�v�ōĐ����܂��B
-   - sudo led-movie-player "[ �g���q�Ȃ��t�@�C���� ]" [ ���[�v�� ] �Ɠ��͂��Ď��s����ƁA�����ɋL�ڂ��ꂽ�񐔂����L�����[�v�ōĐ����܂��B
-   - sudo led-movie-player "[ �g���q�Ȃ��t�@�C���� ]" [ ���[�v�� ] [ LED �p�l���̏c�� ] [ LED �p�l���̉��� ] [ LED �p�l���̒���ڑ��� ] [ LED �p�l���̕���ڑ��� ]
-�Ɠ��͂��Ď��s����ƁA�����ɋL�ڂ��ꂽ�p�����[�^�ōĐ������s���܂��B
-3. Ctrl+C �������ƒ��f�ł��܂��B
+## 使い方
 
-## �g�p��
- - ��{�Fsudo led-movie-player "TEIDA ZONE"
- - �������[�v�Fsudo led-movie-player "TEIDA ZONE" 0
- - �L�����[�v�Fsudo led-movie-player "TEIDA ZONE" 15
- - ������S�Ďw��Fsudo led-movie-player "TEIDA ZONE" 1 64 64 2 1
+1. 動画は最大 192 × 108 までにリサイズした .mp4 形式、音声はサンプリングレート 44100kHz にした .mp3 形式にし、同じファイル名で /home/pi/movieplayer/ に保存します。
+   - LED-Movie-Convert を使うと、動画・音声の変換を自動化できます
+   - /home/pi/movieplayer/ 以外に置くことも可能ですが、その場合は led-movie-player.cc ソース内の記述を変更してください
+2. sudo led-movie-player "[ 拡張子なしファイル名 ]" と入力して実行すると、再生できます。
+   - 拡張子なしファイル名は、予め /home/pi/movieplayer/ に置いてあるファイルのものにしてください
+     - 例えば /home/pi/movieplayer/ に TEIDA ZONE.mp4 と TEIDA ZONE.mp3 を置いた場合、[ 拡張子なしファイル名 ] には "TEIDA ZONE" を入れます
+     - "TEIDA ZONE" のようにファイル名にスペースが含まれる場合は、必ず "" で囲うようにしてください
+   - sudo をつけないとエラーになります、必ず sudo をつけて root で実行してください
+   - 最後のコマンド以外はデフォルトで 64 × 64 パネルを 2 個直列に接続している事を想定して再生します。
+     - 解像度が異なるパネルの場合は、led-movie-player.cc ソース内の記述（ 155 行目あたり）を変更してください
+   - sudo led-movie-player "[ 拡張子なしファイル名 ]" 0 と入力して実行すると、無限ループで再生します。
+   - sudo led-movie-player "[ 拡張子なしファイル名 ]" [ ループ回数 ] と入力して実行すると、引数に記載された回数だけ有限ループで再生します。
+   - sudo led-movie-player "[ 拡張子なしファイル名 ]" [ ループ回数 ] [ LED パネルの縦幅 ] [ LED パネルの横幅 ] [ LED パネルの直列接続数 ] [ LED パネルの並列接続数 ]
+と入力して実行すると、引数に記載されたパラメータで再生を実行します。
+3. Ctrl+C を押すと中断できます。
 
- ## ����
- - 64 �~ 64 �̃p�l���� 2 ����ɂȂ��� LED �p�l����z�肵�Ă��܂��B
-   - ���̉𑜓x�̃p�l���ł͓����Ȃ���������܂���
- - ����m�F�� Raspberry Pi 3 B+ ��� Raspbian �ōs���Ă��܂��B
-   - ����������ƁA���̃��Y�p�C�ł͂��̂܂܂̃R�[�h�ł͓����Ȃ��A�Ƃ����������邩������܂���
- - �R�}���h���C������Đ����܂��BGUI �͂���܂���B
-   - ���Y�p�C���̂���͂Ȃ��߁AGUI ������Ƃ������ĕ`�悪�d���Ȃ邻���c�i rpi-rgb-led-matrix �H���j
- - �낭�Ɍ��؂����Ă��Ȃ������p�\�t�g�i���X�����i�Ŕz�z�������Ȃ��������ǖܑ̖����̂Łc�j�ł��B���̊��œ������͔����c
- - �\�[�X�ɕύX����������A���R�ł����ăr���h���Ȃ��ƕύX�͔��f����܂���B
- - ���܂� Ctrl+C �����Ă����悪���ꑱ����ꍇ������܂��i�v���Z�X�����œ������ςȂ��ɂȂ��Ă��܂��j�c
-   - ���̏ꍇ�́A`ps aux | grep "led-movie-player (�N�I�[�e�[�V�����Ȃ��g���q�Ȃ��t�@�C����) (���[�v�w�肵���ꍇ�͓����)" | grep -v grep | awk '{ print "sudo kill -9", $2 }' | sh`
-     - ��Fps aux | grep "led-movie-player TEIDA ZONE 0" | grep -v grep | awk '{ print "sudo kill -9", $2 }' | sh
-   - �Ǝ��s����Ƌ����I���o����͂��ł��B
+## 使用例
+ - 基本：sudo led-movie-player "TEIDA ZONE"
+ - 無限ループ：sudo led-movie-player "TEIDA ZONE" 0
+ - 有限ループ：sudo led-movie-player "TEIDA ZONE" 15
+ - 引数を全て指定：sudo led-movie-player "TEIDA ZONE" 1 64 64 2 1
 
-## ����E�����̃G���R�[�h
+ ## 注意
+ - 64 × 64 のパネルを 2 個直列につないだ LED パネルを想定しています。
+   - 他の解像度のパネルでは動かないかもしれません
+ - 動作確認は Raspberry Pi 3 B+ 上の Raspbian で行っています。
+   - もしかすると、他のラズパイではそのままのコードでは動かない、という事があるかもしれません
+ - コマンドラインから再生します。GUI はありません。
+   - ラズパイ自体が非力なため、GUI があるとかえって描画が重くなるそう…（ rpi-rgb-led-matrix 曰く）
+ - ろくに検証もしていない自分用ソフト（元々改造品で配布するつもりなかったけど勿体無いので…）です。他の環境で動くかは微妙…
+ - ソースに変更を加えたら、当然ですが再ビルドしないと変更は反映されません。
+ - たまに Ctrl+C 押しても動画が流れ続ける場合があります（プロセスが裏で動きっぱなしになってしまう）…
+   - その場合は、`ps aux | grep "led-movie-player (クオーテーションなし拡張子なしファイル名) (ループ指定した場合は入れる)" | grep -v grep | awk '{ print "sudo kill -9", $2 }' | sh`
+     - 例：ps aux | grep "led-movie-player TEIDA ZONE 0" | grep -v grep | awk '{ print "sudo kill -9", $2 }' | sh
+   - と実行すると強制終了出来るはずです。
 
-�O�q�̒ʂ�ALED �p�l���ōĐ������铮��≹���́A�\�� LED-Movie-Player �ōĐ��ł���`���ɕϊ�����K�v������܂��B
+## 動画・音声のエンコード
 
- - ����
-   - .mp4 �`��
-   - �ő�ł� 192 �~ 108 �Ƀ��T�C�Y����
-     - 720p �Ƃ��̓�������̂܂ܓ˂����ނƏd�����ăX���[�Đ���ԂɂȂ�܂�
-     - 160 �~ 90 �̕������Y�����܂���
-       - 192 �~ 108 �̓M���M���ł�
-   - ������ mp3 ����Đ�����̂ł����Ă��Ȃ��Ă���
- - ����
-   - .mp3 �`��
-   - �r�b�g���[�g��128kbps�ɂ���
-     - 192kbps �Ƃ��ł������邩������܂��񂪈ꉞ
-   - �T���v�����[�g��K��44100kHz�ɂ���
-     - 48000kHz ���Ɖ����o�O��c
+前述の通り、LED パネルで再生させる動画や音声は、予め LED-Movie-Player で再生できる形式に変換する必要があります。
 
-LED-Movie-Convert �𗘗p���āAYouTube ���̓���⃉�Y�p�C��ɂ��铮��������ŕϊ������邱�Ƃ��ł��܂��B  
-�o���邾��������𗘗p���鎖�������߂��܂��i��q�j
+ - 動画
+   - .mp4 形式
+   - 最大でも 192 × 108 にリサイズする
+     - 720p とかの動画をそのまま突っ込むと重すぎてスロー再生状態になります
+     - 160 × 90 の方が音ズレしません
+       - 192 × 108 はギリギリです
+   - 音声は mp3 から再生するのであってもなくても可
+ - 音声
+   - .mp3 形式
+   - ビットレートを128kbpsにする
+     - 192kbps とかでもいけるかもしれませんが一応
+   - サンプルレートを必ず44100kHzにする
+     - 48000kHz だと音がバグる…
 
-�蓮�ŃG���R�[�h����ꍇ�Affmpeg �ŗ\�ߕϊ����Ă����܂��傤�i Windows �ł������̂ŁAPC �ŃG���R�[�h���ă��Y�p�C�Ɉڂ��̂�����ł��j
+LED-Movie-Convert を利用して、YouTube 等の動画やラズパイ上にある動画を自動で変換させることができます。  
+出来るだけこちらを利用する事をお勧めします（後述）
 
-����̃G���R�[�h�R�}���h��: ffmpeg -i "Movie.mp4" -vf scale=192:108 "Movie-led.mp4"  
-�����̃G���R�[�h�R�}���h��: ffmpeg -i "Movie.mp3" -vn -af dynaudnorm -ac 2 -ar 44100 -ab 128k "Movie-led.mp3"
+手動でエンコードする場合、ffmpeg で予め変換しておきましょう（ Windows でも動くので、PC でエンコードしてラズパイに移すのもありです）
 
-�ϊ����I�������A�ϊ���̃t�@�C�������Y�p�C�� /home/pi/movieplayer/ �ȉ��ɃR�s�[���Ă��������B  
-�O�q�̒ʂ�Aled-movie-player.cc �\�[�X���̋L�q��ύX���A�t�H���_��ύX���邱�Ƃ��\�ł�
+動画のエンコードコマンド例: ffmpeg -i "Movie.mp4" -vf scale=192:108 "Movie-led.mp4"  
+音声のエンコードコマンド例: ffmpeg -i "Movie.mp3" -vn -af dynaudnorm -ac 2 -ar 44100 -ab 128k "Movie-led.mp3"
+
+変換が終わったら、変換後のファイルをラズパイの /home/pi/movieplayer/ 以下にコピーしてください。  
+前述の通り、led-movie-player.cc ソース内の記述を変更し、フォルダを変更することも可能です
 
 ## LED-Movie-Convert
 
-### ����
+### 注意
 
- - �o�b�`�t�@�C���ł� (�p�X�̒ʂ����ꏊ�ɒu���΃R�}���h���l�Ɏ��s�ł��܂�)
- - sudo make install����ۂɂ��łŃp�X�̒ʂ����ꏊ�ɃC���X�g�[������܂�
- - ���Y�p�C�̃X�y�b�N���Ⴂ�֌W�ŃG���R�[�h�Ɏ��Ԃ�������܂��A�C���ɑ҂��܂��傤
- - �G���R�[�h���͕��ׂ����ɍ����Ȃ�̂ŁA�G���R�[�h���� LED-Movie-Player �ōĐ������悤�Ƃ���ƃX���[�Đ��ɂȂ��Ă��܂���������܂�
-   - (���Y�p�C�̐��\���Ⴂ���� LED �p�l���ւ̕\�����������ۂ̍Đ��X�s�[�h�ɒǂ��t���Ȃ�)
+ - バッチファイルです (パスの通った場所に置けばコマンド同様に実行できます)
+ - sudo make installする際についででパスの通った場所にインストールされます
+ - ラズパイのスペックが低い関係でエンコードに時間がかかります、気長に待ちましょう
+ - エンコード中は負荷が非常に高くなるので、エンコード中に LED-Movie-Player で再生させようとするとスロー再生になってしまう事があります
+   - (ラズパイの性能が低いため LED パネルへの表示処理が実際の再生スピードに追い付かない)
 
-### �g����
- - �������c �\�[�X�����w�肵�܂� ( URL or �t�@�C���p�X)
- - �������c �\�[�X�̎�ނ�I�����܂� ( URL ����_�E�����[�h����Ȃ� download �A�t�@�C���p�X����Ȃ� file )
- - ��O�����c �t�@�C������ݒ肵�܂� (�t�@�C�����𓮉於 or �t�@�C����������Ȃ� auto �A����ȊO�Ȃ�g���q�Ȃ��̃t�@�C����������)
- - ��l����(�I�v�V����)�c ����̉������w��i��: 160 �j
- - ��܈���(�I�v�V����)�c ����̍������w��i��: 90 �j
+### 使い方
+ - 第一引数… ソース元を指定します ( URL or ファイルパス)
+ - 第二引数… ソースの種類を選択します ( URL からダウンロードするなら download 、ファイルパスからなら file )
+ - 第三引数… ファイル名を設定します (ファイル名を動画名 or ファイル名から取るなら auto 、それ以外なら拡張子なしのファイル名を入れる)
+ - 第四引数(オプション)… 動画の横幅を指定（例: 160 ）
+ - 第五引数(オプション)… 動画の高さを指定（例: 90 ）
 
-### �g�p��
+### 使用例
 
- - YouTube ������_�E�����[�h����ꍇ
+ - YouTube 等からダウンロードする場合
    - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download auto
    - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE"
    - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" 192 108
- - ���[�J���t�@�C������ϊ�����ꍇ
-   - led-movie-convert "/home/pi/TEIDA ZONE �y�ѓc�w�~TEI ZONE�z.mp4" file auto
-   - led-movie-convert "/home/pi/TEIDA ZONE �y�ѓc�w�~TEI ZONE�z.mp4" file "TEIDA ZONE"
-   - led-movie-convert "/home/pi/TEIDA ZONE �y�ѓc�w�~TEI ZONE�z.mp4" file "TEIDA ZONE" 160 90
+ - ローカルファイルから変換する場合
+   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file auto
+   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE"
+   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE" 160 90
 
-## �ӎ�
+## 謝辞
 
-�������̋L���i https://qiita.com/cstoku/items/eb17d111225d3e35ec61 �j�̒��҂� cstoku ����A�f���炵���R�[�h��{���ɂ��肪�Ƃ��������܂��c   
-�i�������ł͂܂������Ȃ��R�[�h�ł����E�\�������͂قڂ��̂܂܂ł��j
+改造元の記事（ https://qiita.com/cstoku/items/eb17d111225d3e35ec61 ）の著者の cstoku さん、素晴らしいコードを本当にありがとうございます…   
+（私だけではまず書けないコードでした・表示処理はほぼそのままです）
 
 ## License
 [MIT Licence](LICENSE.txt)
