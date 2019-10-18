@@ -74,9 +74,7 @@
  - ろくに検証もしていない自分用ソフト（元々改造品で配布するつもりなかったけど勿体無いので…）です。他の環境で動くかは微妙…
  - ソースに変更を加えたら、当然ですが再ビルドしないと変更は反映されません。
  - たまに Ctrl+C 押しても動画が流れ続ける場合があります（プロセスが裏で動きっぱなしになってしまう）…
-   - その場合は、`ps aux | grep "led-movie-player (クオーテーションなし拡張子なしファイル名) (ループ指定した場合は入れる)" | grep -v grep | awk '{ print "sudo kill -9", $2 }' | sh`
-     - 例：ps aux | grep "led-movie-player TEIDA ZONE 0" | grep -v grep | awk '{ print "sudo kill -9", $2 }' | sh
-   - と実行すると強制終了出来るはずです。
+   - その場合は、`ps aux | grep "led-movie-player.*" | grep -v grep | awk '{ print "sudo kill -9", $2 }' | sh` と実行すると強制終了出来るはずです。
 
 ## 動画・音声のエンコード
 
