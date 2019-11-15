@@ -1,7 +1,7 @@
 
 # LED-Movie-Player
 
-動画・音声を読み込んで LED マトリクスパネル上で再生させる Raspberry Pi 用アプリケーション  
+動画・音声を読み込んで LED マトリクスパネル上で再生させるラズパイ用ソフト  
 （ https://qiita.com/cstoku/items/eb17d111225d3e35ec61 の記事上のコードより改造）です。
 
 必要なものや配線等は [こちら](https://blog.tsukumijima.net/article/ledmatrix-movie/) の記事も参考にしてください。
@@ -10,6 +10,8 @@
 
  - led-movie-player … Raspberry Pi 3 B+ 上でビルドした実行ファイル
    - 基本的に Linux では実行ファイルに拡張子が付きません
+   - Raspberry Pi 3 B+ にてビルドしています
+     - 他の機種では動かないかもしれません・自ビルドする事を推奨します（後述）
  - led-movie-player.cc … ソース（ C++ ）ファイル
    - 表示・再生部分のコードを前述の記事よりお借りしています
  - led-movie-convert … YouTube 等の動画やラズパイ上の動画を変換して LED-Movie-Player で再生出来る形式にするソフト
@@ -42,39 +44,39 @@
 
 ## 使い方
 
-1. 動画は最大 192 × 108 までにリサイズした .mp4 形式、音声はサンプリングレート 44100kHz にした .mp3 形式にし、同じファイル名で /home/pi/movieplayer/ に保存します。
+1. 動画は最大 192 × 108 までにリサイズした .mp4 形式、音声はサンプリングレート 44100kHz にした .mp3 形式にし、同じファイル名で /home/pi/movieplayer/ に保存します
    - LED-Movie-Convert を使うと、動画・音声の変換を自動化できます
    - /home/pi/movieplayer/ 以外に置くことも可能ですが、その場合は led-movie-player.cc ソース内の記述を変更してください
-2. sudo led-movie-player "[ 拡張子なしファイル名 ]" と入力して実行すると、再生できます。
+2. sudo led-movie-player "[ 拡張子なしファイル名 ]" と入力して実行すると、再生できます
    - 拡張子なしファイル名は、予め /home/pi/movieplayer/ に置いてあるファイルのものにしてください
-     - 例えば /home/pi/movieplayer/ に TEIDA ZONE.mp4 と TEIDA ZONE.mp3 を置いた場合、[ 拡張子なしファイル名 ] には "TEIDA ZONE" を入れます
-     - "TEIDA ZONE" のようにファイル名にスペースが含まれる場合は、必ず "" で囲うようにしてください
+     - 例えば /home/pi/movieplayer/ に example.mp4 と example.mp3 を置いた場合、[ 拡張子なしファイル名 ] には "example" を入れます
+     - ファイル名にスペースが含まれる場合は、"example video" のように必ず "" で囲うようにしてください
    - sudo をつけないとエラーになります、必ず sudo をつけて root で実行してください
-   - 最後のコマンド以外はデフォルトで 64 × 64 パネルを 2 個直列に接続している事を想定して再生します。
+   - 最後のコマンド以外はデフォルトで 64 × 64 パネルを 2 個直列に接続している事を想定して再生します
      - 解像度が異なるパネルの場合は、led-movie-player.cc ソース内の記述（ 155 行目あたり）を変更してください
-   - sudo led-movie-player "[ 拡張子なしファイル名 ]" 0 と入力して実行すると、無限ループで再生します。
-   - sudo led-movie-player "[ 拡張子なしファイル名 ]" [ ループ回数 ] と入力して実行すると、引数に記載された回数だけ有限ループで再生します。
+   - sudo led-movie-player "[ 拡張子なしファイル名 ]" 0 と入力して実行すると、無限ループで再生します
+   - sudo led-movie-player "[ 拡張子なしファイル名 ]" [ ループ回数 ] と入力して実行すると、引数に記載された回数だけ有限ループで再生します
    - sudo led-movie-player "[ 拡張子なしファイル名 ]" [ ループ回数 ] [ LED パネルの縦幅 ] [ LED パネルの横幅 ] [ LED パネルの直列接続数 ] [ LED パネルの並列接続数 ]
-と入力して実行すると、引数に記載されたパラメータで再生を実行します。
-3. Ctrl+C を押すと中断できます。
+と入力して実行すると、引数に記載されたパラメータで再生を実行します
+3. Ctrl+C を押すと中断できます
 
 ## 使用例
- - 基本：sudo led-movie-player "TEIDA ZONE"
- - 無限ループ：sudo led-movie-player "TEIDA ZONE" 0
- - 有限ループ：sudo led-movie-player "TEIDA ZONE" 15
- - 引数を全て指定：sudo led-movie-player "TEIDA ZONE" 1 64 64 2 1
+ - 基本：sudo led-movie-player "example"
+ - 無限ループ：sudo led-movie-player "example" 0
+ - 有限ループ：sudo led-movie-player "example" 15
+ - 引数を全て指定：sudo led-movie-player "example" 1 64 64 2 1
 
  ## 注意
- - 64 × 64 のパネルを 2 個直列につないだ LED パネルを想定しています。
+ - 64 × 64 のパネルを 2 個直列につないだ LED パネルを想定しています
    - 他の解像度のパネルでは動かないかもしれません
- - 動作確認は Raspberry Pi 3 B+ 上の Raspbian で行っています。
+ - 動作確認は Raspberry Pi 3 B+ 上の Raspbian で行っています
    - もしかすると、他のラズパイではそのままのコードでは動かない、という事があるかもしれません
- - コマンドラインから再生します。GUI はありません。
-   - ラズパイ自体が非力なため、GUI があるとかえって描画が重くなるそう…（ rpi-rgb-led-matrix 曰く）
- - ろくに検証もしていない自分用ソフト（元々改造品で配布するつもりなかったけど勿体無いので…）です。他の環境で動くかは微妙…
- - ソースに変更を加えたら、当然ですが再ビルドしないと変更は反映されません。
- - たまに Ctrl+C 押しても動画が流れ続ける場合があります（プロセスが裏で動きっぱなしになってしまう）…
-   - その場合は、`ps aux | grep "led-movie-player.*" | grep -v grep | awk '{ print "sudo kill -9", $2 }' | sh` と実行すると強制終了出来るはずです。
+ - コマンドラインから実行します（ GUI はありません）
+   - ラズパイ自体が非力なため、GUI があるとかえって描画が重くなります
+ - ろくに検証もしていない自分用ソフトです、他の環境で動くかは微妙…
+ - ソースに変更を加えた場合、当然ですが再度ビルドしないと変更は反映されません
+ - たまに Ctrl+C を押しても動画が流れ続ける場合があります（プロセスが裏で動きっぱなしになる）
+   - その場合は、`ps aux | grep "led-movie-player.*" | grep -v grep | awk '{ print "sudo kill -9", $2 }' | sh` と実行すると LED-Movie-Player を強制終了できます
 
 ## 動画・音声のエンコード
 
@@ -134,12 +136,12 @@ LED-Movie-Convert を利用して、YouTube 等の動画やラズパイ上にあ
    - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" false 192 108
    - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" true 192 108
  - ローカルファイルから変換する場合
-   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file auto false
-   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file auto true
-   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE" false
-   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE" true
-   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE" false 160 90
-   - led-movie-convert "/home/pi/TEIDA ZONE 【飯田駅×TEI ZONE】.mp4" file "TEIDA ZONE" true 160 90
+   - led-movie-convert "/home/pi/example video.mp4" file auto false
+   - led-movie-convert "/home/pi/example video.mp4" file auto true
+   - led-movie-convert "/home/pi/example video.mp4" file "example" false
+   - led-movie-convert "/home/pi/example video.mp4" file "example" true
+   - led-movie-convert "/home/pi/example video.mp4" file "example" false 160 90
+   - led-movie-convert "/home/pi/example video.mp4" file "example" true 160 90
 
 ## 謝辞
 
