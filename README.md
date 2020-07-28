@@ -30,13 +30,17 @@
     - `sudo apt update -y && sudo apt upgrade -y`
     - `sudo apt install -y python3 python3-pip ffmpeg gcc g++ make libopencv-dev libsdl1.2-dev libsdl2-dev libsdl-mixer1.2-dev libsdl2-mixer-dev`
     - `sudo pip3 install youtube-dl`
-2. make でビルドします
+2. led-movie-player ディレクトリに移動したあと、
+    - `git submodule init`
+    - `git submodule update`
+    - と実行すると submodule がダウンロードされるので、正常にビルドできるようになるはずです。
+3. make でビルドします
     - `make`
     - ビルドに失敗する場合、ライブラリがうまくインストール出来ていない可能性があります
-3. make install でパスの通った場所にインストールします
+4. make install でパスの通った場所にインストールします
     - `sudo make install`
     - ちゃんと sudo をつけましょう
-4. その他、デフォルトではラズパイの bcm2835 サウンドカードを無効化する必要があります（ハードウェアパルスの生成に必要なため）
+5. その他、デフォルトではラズパイの bcm2835 サウンドカードを無効化する必要があります（ハードウェアパルスの生成に必要なため）
     - そのため、別途 USB サウンドカードを購入し、USB サウンドカードで再生できる（ラズパイ内蔵サウンドカードを使わない）状態にする必要があります
     - ハードウェアパルスを生成せずソフトウェアパルスで再生する事も可能ですが、ちらつきが発生するため非推奨です
       - ハードウェアパルスを無効化して再生させたい場合は、led-movie-player.cc 中の options.disable_hardware_pulsing = false; を options.disable_hardware_pulsing = true; に書き換え、もう一度ビルドしてください
