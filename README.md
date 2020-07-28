@@ -30,7 +30,10 @@
     - `sudo apt update -y && sudo apt upgrade -y`
     - `sudo apt install -y python3 python3-pip ffmpeg gcc g++ make libopencv-dev libsdl1.2-dev libsdl2-dev libsdl-mixer1.2-dev libsdl2-mixer-dev`
     - `sudo pip3 install youtube-dl`
-2. led-movie-player ディレクトリに移動したあと、git submodule init と実行すると submodule がダウンロードされるので、正常にビルドできるようになるはずです。
+2. led-movie-player ディレクトリに移動したあと、
+    - `git submodule init`
+    - `git submodule update`
+    - と実行すると submodule がダウンロードされるので、正常にビルドできるようになるはずです。
 3. make でビルドします
     - `make`
     - ビルドに失敗する場合、ライブラリがうまくインストール出来ていない可能性があります
