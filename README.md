@@ -77,7 +77,7 @@
    - もしかすると、他のラズパイではそのままのコードでは動かない、という事があるかもしれません
  - コマンドラインから実行します（ GUI はありません）
    - ラズパイ自体が非力なため、GUI があるとかえって描画が重くなります
- - ろくに検証もしていない自分用ソフトです、他の環境で動くかは微妙…
+ - ろくに検証もしていない自分用ソフトです 他の環境で動くかはかなり微妙…
  - ソースに変更を加えた場合、当然ですが再度ビルドしないと変更は反映されません
  - たまに Ctrl+C を押しても動画が流れ続ける場合があります（プロセスが裏で動きっぱなしになる）
    - その場合は、`ps aux | grep "led-movie-player.*" | grep -v grep | awk '{ print "sudo kill -9", $2 }' | sh` と実行すると LED-Movie-Player を強制終了できます
@@ -133,12 +133,12 @@ LED-Movie-Convert を利用して、YouTube 等の動画やラズパイ上にあ
 ### 使用例
 
  - YouTube 等からダウンロードする場合
-   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download auto false
-   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download auto true
-   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" false
-   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" true
-   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" false 192 108
-   - led-movie-convert https://www.youtube.com/watch?v=3yuEZ103aNY download "RED SUMA ZONE" true 192 108
+   - led-movie-convert https://www.youtube.com/watch?v=xxxxxxxxx download auto false
+   - led-movie-convert https://www.youtube.com/watch?v=xxxxxxxxx download auto true
+   - led-movie-convert https://www.youtube.com/watch?v=xxxxxxxxx download "Some Videos" false
+   - led-movie-convert https://www.youtube.com/watch?v=xxxxxxxxx download "Some Videos" true
+   - led-movie-convert https://www.youtube.com/watch?v=xxxxxxxxx download "Some Videos" false 192 108
+   - led-movie-convert https://www.youtube.com/watch?v=xxxxxxxxx download "Some Videos" true 192 108
  - ローカルファイルから変換する場合
    - led-movie-convert "/home/pi/example video.mp4" file auto false
    - led-movie-convert "/home/pi/example video.mp4" file auto true
